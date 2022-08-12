@@ -42,13 +42,13 @@ class Transacao {
         this.valorDaTransferencia = valorDaTransferencia
 
         if (this.contaOrigem.saldo >= this.valorDaTransferencia){
-           this.contaOrigem.historico.push ({
+           this.contaOrigem.historico.push({
                 idTransacao: idTransacao,
                 dataDeTransacao: dataDeTransacao,
                 valorDaTransferencia: valorDaTransferencia,
                 tipo: "pagamento",
               })
-              this.contaDestino.historico.push( {
+              this.contaDestino.historico.push({
                 idTransacao: idTransacao,
                 dataDeTransacao: dataDeTransacao,
                 valorDaTransferencia: valorDaTransferencia,
@@ -57,11 +57,11 @@ class Transacao {
             this.contaOrigem.saldo -= valorDaTransferencia
             this.contaDestino.saldo += valorDaTransferencia
               
-              return "Transferência realizada com sucesso!"
+              return {mensagen:"Transferência realizada com sucesso!"}
         }
        
         else if (this.contaOrigem.saldo < this.valorDaTransferencia){
-            return "Saldo insuficiente para transferência!"
+            return {mensagem:"Saldo insuficiente para transferência!"}
         }
     }
 
@@ -74,13 +74,13 @@ class Transacao {
 
         this.contaDestino.saldo += valorDoDeposito
 
-        this.contaDestino.historico.push( {
+        this.contaDestino.historico.push({
             idDeposito: idDeposito,
             dataDoDeposito: dataDoDeposito,
             valorDoDeposito: valorDoDeposito,
             tipo: "recebimento",
           })
-          return "Depósito realizado com sucesso!"
+          return {mensagem:"Depósito realizado com sucesso!"}
     }
 
     static pagamentoSalario(contaOrigem, contaDestino, idPagamento, dataDoPagamento,valorDoSalario){
@@ -91,10 +91,10 @@ class Transacao {
         this.valorDoSalario = valorDoSalario
 
         if (this.contaOrigem instanceof PessoaFisica && this.valorDoSalario > 1000){
-            return  "Seu limite máximo para este tipo de operação é de 1000. Entre em contato com o banco."
+            return  {mensagem:"Seu limite máximo para este tipo de operação é de 1000. Entre em contato com o banco."}
         }
         else if (this.contaOrigem.saldo < this.valorDoSalario){
-            return "Saldo insuficiente para realizar o pagamento!"
+            return {mensagem:"Saldo insuficiente para realizar o pagamento!"}
         }
         else{
             this.contaDestino.saldo += valorDoSalario
@@ -105,7 +105,13 @@ class Transacao {
                 valorDoSalario: valorDoSalario,
                 tipo: "recebimento",
               })
-              return "Pagamento realizado com sucesso!"
+              this.contaOrigem.historico.push({
+                idPagamento: idPagamento,
+                dataDoPagamento: dataDoPagamento,
+                valorDoSalario: valorDoSalario,
+                tipo: "pagamento"
+              })
+              return {mensagem:"Pagamento realizado com sucesso!"}
         }
     }
 }
@@ -141,7 +147,7 @@ const testes = () => {
     console.log(Transacao.deposito(Lennon, 3, "02/07/2022", 650)); // Deve retornar {mensagem: "Depósito realizado com sucesso!"}
   
     console.log(Lennon.historico[1]); // Deve retornar {idDeposito: 3, dataDoDeposito: "02/07/2022", valorDoDeposito: 650, tipo: "recebimento"}
-  console.log(Lennon)
+
     console.log(Lennon.saldo); // Deve retornar 1150
   
     console.log(Transacao.pagamentoSalario(Maria, Joao, 4, "22/07/2022", 1100)); // Deve retornar {mensagem: "Seu limite máximo para este tipo de operação é de 1000. Entre em contato com o banco."}
