@@ -57,7 +57,7 @@ class Transacao {
             this.contaOrigem.saldo -= valorDaTransferencia
             this.contaDestino.saldo += valorDaTransferencia
               
-              return {mensagen:"Transferência realizada com sucesso!"}
+              return {mensagem:"Transferência realizada com sucesso!"}
         }
        
         else if (this.contaOrigem.saldo < this.valorDaTransferencia){
